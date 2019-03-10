@@ -91,11 +91,44 @@ export default (editor, opts = {}) => {
     }
   });
 
+
+
+    function buildEditor(codeName, theme, label, editor) {
+       var codeMirror;
+        const cm = editor.CodeManager || null;
+        var input = document.createElement('textarea');
+        !codeMirror && (codeMirror = cm.getViewer('CodeMirror'));
+
+        var el = codeMirror.clone().set({
+            label: label,
+            codeName: codeName,
+            theme: theme,
+            input: input
+        });
+
+        var $el = new cm.EditorView({
+            model: el,
+            config: cm.getConfig()
+        }).render().$el;
+
+        el.init(input);
+
+        return { el: el, $el: $el };
+    }
   // Add button inside export dialog
   if (config.addExportBtn) {
+
     editor.on('run:export-template', () => {
-      editor.Modal.getContentEl().appendChild(btnExp);
-      btnExp.onclick = () => {
+
+        var oWkCsslEd = buildEditor('css', 'hopscotch', 'WKHTMLTOPDF CSS', editor);
+        var cssWkEditor = oWkCsslEd.el;
+
+        cssWkEditor.setContent(postcss([autoprefixer({ browsers: 'last 4 versions' })]).process(editor.getCss()).css);
+        editor.Modal.getContentEl().appendChild(oWkCsslEd.$el[0]);
+
+        editor.Modal.getContentEl().appendChild(btnExp);
+
+        btnExp.onclick = () => {
         editor.runCommand(commandName);
       };
     });
