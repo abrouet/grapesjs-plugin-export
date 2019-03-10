@@ -5,6 +5,8 @@ export default (editor, opts = {}) => {
   let pfx = editor.getConfig('stylePrefix');
   let btnExp = document.createElement('button');
   let commandName = 'gjs-export-zip';
+  let autoprefixer = require('autoprefixer');
+  let postcss      = require('postcss');
 
   let config = {
     addExportBtn: 1,
@@ -14,6 +16,10 @@ export default (editor, opts = {}) => {
     root: {
       css: {
         'style.css': ed => ed.getCss(),
+        'wkhtmltopdf_style.css': ed => {
+          const css =  ed.getCss();
+            return postcss([autoprefixer({ browsers: 'last 4 versions' })]).process(css).css;
+        },
       },
       'index.html': ed =>
         `<!doctype html>
