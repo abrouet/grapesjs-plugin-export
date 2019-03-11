@@ -93,7 +93,7 @@ export default (editor, opts = {}) => {
 
 
 
-    function buildEditor(codeName, theme, label, editor) {
+    function buildEditorInternal(codeName, theme, label, editor) {
        var codeMirror;
         const cm = editor.CodeManager || null;
         var input = document.createElement('textarea');
@@ -120,7 +120,7 @@ export default (editor, opts = {}) => {
 
     editor.on('run:export-template', () => {
 
-        var oWkCsslEd = buildEditor('css', 'hopscotch', 'WKHTMLTOPDF CSS', editor);
+        var oWkCsslEd = buildEditorInternal('css', 'hopscotch', 'WKHTMLTOPDF CSS', editor);
         var cssWkEditor = oWkCsslEd.el;
 
         cssWkEditor.setContent(postcss([autoprefixer({ browsers: 'last 4 versions' })]).process(editor.getCss()).css);
